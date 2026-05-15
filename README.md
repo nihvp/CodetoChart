@@ -14,7 +14,6 @@ Code to Chart is a lightweight, zero-backend, browser-based tool for writing, pr
 1. Visit [Code to Chart](https://muhammed.me/CodetoChart/)
 3. Select your engine, write your code, and click **Render**.
 
----
 
 ## 📊 Quick Guide: Writing Chart.js
 
@@ -46,7 +45,6 @@ Chart.js uses a single JavaScript Object to define the chart. Do not write varia
 
 *💡 Tip: When using the Exporter Studio, checking the "Labels" box will automatically draw the exact data values on top of your bars and lines, ignoring normal Chart.js tooltip rules.*
 
----
 
 ## 🌊 Quick Guide: Writing Mermaid.js
 
@@ -92,11 +90,7 @@ gantt
 
 ```
 
----
 
-Here is the complete, updated `README.md` file, now including a dedicated **Prompting Guide** section to help you and your users get perfect chart codes from AI models like ChatGPT, Gemini, or Claude.
-
----
 
 ## 🤖 AI Prompting Guide
 

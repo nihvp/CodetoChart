@@ -7,7 +7,6 @@ let labelTransforms = {};
 mermaid.initialize({ startOnLoad: false, theme: 'default' });
 
 const boilerplates = {
-    // Notice the new 'customLabelColors' array added to the boilerplate
     chartjs: `{\n  type: 'bar',\n  data: {\n    labels: ['Red', 'Blue', 'Yellow', 'Green'],\n    datasets: [{\n      label: '# of Votes',\n      data: [12, 19, 3, 5],\n      customLabels: ['Good', 'Great', 'Bad', 'Okay'],\n      customLabelColors: ['#bc6c25', '#dda15e', '#606c38', '#283618'],\n      backgroundColor: ['#bc6c25', '#dda15e', '#606c38', '#283618']\n    }]\n  },\n  options: {\n    animation: false,\n    maintainAspectRatio: false,\n    legend: { labels: { boxWidth: 0, fontColor: '#283618', fontFamily: 'Instrument Serif' } }\n  }\n}`,
     mermaid: `graph TD\n    A[Hard Drive] -->|Read| B(CPU)\n    B -->|Write| C{RAM}\n    C -->|Store| D[Cloud]`
 };
@@ -29,15 +28,32 @@ window.onload = () => {
     document.getElementById('nextTourBtn').addEventListener('click', nextTourStep);
     window.addEventListener('resize', handleResize);
 
+    // Guide Modal Listeners
+    document.getElementById('guideBtn').addEventListener('click', openGuide);
+    document.getElementById('guideCloseBtn').addEventListener('click', closeGuide);
+    document.querySelector('.guide-tabs').addEventListener('click', switchGuideTab);
+    document.getElementById('guideOverlay').addEventListener('click', (e) => {
+        if(e.target.id === 'guideOverlay') closeGuide();
+    });
+
+    // EVENT DELEGATION FOR THE COPY BUTTON
+    // Bypasses strict Content Security Policies that block inline 'onclick' attributes.
+    document.getElementById('guideContentArea').addEventListener('click', (e) => {
+        const copyBtn = e.target.closest('.copy-prompt-btn');
+        if (copyBtn) {
+            const targetId = copyBtn.getAttribute('data-target-id');
+            copyPrompt(copyBtn, targetId);
+        }
+    });
+
     loadSavedTheme();
     loadBoilerplate();
-    checkFirstVisit();
+    checkFirstVisit(); 
 };
 
 /* ==========================================================================
    3. CORE APPLICATION LOGIC & CANVAS PHYSICS
    ========================================================================== */
-
 function getSafeConfig() {
     return new Function("return " + document.getElementById('codeInput').value)();
 }
@@ -65,7 +81,8 @@ function loadBoilerplate() {
         showLabelsCheckbox.disabled = false;
         labelColorPicker.disabled = false;
     }
-    renderPreview();
+    
+    renderPreview(); 
 }
 
 const ChartLabelsPlugin = {
@@ -76,7 +93,7 @@ const ChartLabelsPlugin = {
         const ctx = chart.ctx;
         const defaultColor = document.getElementById('labelColor').value;
         
-        chart.labelHitboxes = {};
+        chart.labelHitboxes = {}; 
 
         chart.data.datasets.forEach(function(dataset, datasetIndex) {
             const meta = chart.getDatasetMeta(datasetIndex);
@@ -90,7 +107,6 @@ const ChartLabelsPlugin = {
                     }
                     const transform = labelTransforms[key];
                     
-                    // Determine Color: Use custom array if it exists, otherwise use UI fallback
                     let finalColor = defaultColor;
                     if (dataset.customLabelColors && dataset.customLabelColors[pointIndex]) {
                         finalColor = dataset.customLabelColors[pointIndex];
@@ -138,7 +154,6 @@ function attachCanvasDragEvents(canvas, chart) {
 
     canvas.addEventListener('mousedown', (e) => {
         if (!document.getElementById('showLabels').checked) return;
-        
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
@@ -166,13 +181,10 @@ function attachCanvasDragEvents(canvas, chart) {
         if (isDragging && activeKey) {
             const deltaX = mouseX - startX;
             const deltaY = mouseY - startY;
-
             labelTransforms[activeKey].dx += deltaX;
             labelTransforms[activeKey].dy += deltaY;
-
             startX = mouseX;
             startY = mouseY;
-
             chart.update(0); 
         } else {
             let hovering = false;
@@ -204,10 +216,8 @@ function attachCanvasDragEvents(canvas, chart) {
             const box = chart.labelHitboxes[key];
             if (mouseX >= box.x - 5 && mouseX <= box.x + box.w + 5 &&
                 mouseY >= box.y - 5 && mouseY <= box.y + box.h + 5) {
-                
                 e.preventDefault(); 
                 const sizeChange = e.deltaY < 0 ? 1 : -1; 
-                
                 labelTransforms[key].fontSize = Math.max(8, Math.min(60, labelTransforms[key].fontSize + sizeChange));
                 chart.update(0);
                 return;
@@ -231,7 +241,7 @@ function renderPreview() {
     try {
         if (engine === 'chartjs') {
             area.innerHTML = '<canvas id="previewCanvas"></canvas>';
-            const config = getSafeConfig();
+            const config = getSafeConfig(); 
             
             if(!config.options) config.options = {};
             config.options.animation = false; 
@@ -254,14 +264,13 @@ function renderPreview() {
             });
         }
     } catch (e) {
-        console.warn("Render Error:", e.message);
+        console.warn("Render Error:", e.message); 
     }
 }
 
 /* ==========================================================================
    4. EXPORT LOGIC
    ========================================================================== */
-
 function triggerDownload(dataUrl, filename) {
     const link = document.createElement('a');
     link.href = dataUrl; link.download = filename; link.click();
@@ -316,7 +325,6 @@ function exportSVG() {
     if (engine === 'chartjs') {
         const config = getSafeConfig();
         const svgContext = new C2S(800, 450); 
-        
         svgContext.clip = function() {}; 
         
         const dummyCanvas = document.createElement('canvas');
@@ -334,7 +342,7 @@ function exportSVG() {
             config.plugins.push(ChartLabelsPlugin);
         }
         
-        new Chart(svgContext, config);
+        new Chart(svgContext, config); 
         const blob = new Blob([svgContext.getSerializedSvg()], { type: "image/svg+xml;charset=utf-8" });
         triggerDownload(URL.createObjectURL(blob), 'chart.svg');
     } 
@@ -350,12 +358,11 @@ function exportSVG() {
 /* ==========================================================================
    5. UI & TOUR LOGIC
    ========================================================================== */
-
 function toggleTheme() {
     const html = document.documentElement;
     if (html.getAttribute('data-theme') === 'light') {
         html.setAttribute('data-theme', 'dark');
-        localStorage.setItem('theme', 'dark');
+        localStorage.setItem('theme', 'dark'); 
     } else {
         html.setAttribute('data-theme', 'light');
         localStorage.setItem('theme', 'light');
@@ -398,12 +405,11 @@ function endTour() {
     document.getElementById('tourBackdrop').classList.remove('active');
     document.getElementById('tourTooltip').classList.remove('active');
     document.querySelectorAll('.tour-spotlight-active').forEach(el => el.classList.remove('tour-spotlight-active'));
-    localStorage.setItem('tourCompleted', 'true');
+    localStorage.setItem('tourCompleted', 'true'); 
 }
 
 function updateTourUI() {
     document.querySelectorAll('.tour-spotlight-active').forEach(el => el.classList.remove('tour-spotlight-active'));
-    
     const step = tourSteps[currentTourStep];
     const targetEl = document.getElementById(step.id);
     const tooltip = document.getElementById('tourTooltip');
@@ -443,4 +449,167 @@ function checkFirstVisit() {
 
 function handleResize() {
     if(document.getElementById('tourTooltip').classList.contains('active')) updateTourUI();
+}
+
+/* ==========================================================================
+   6. GUIDE MODAL LOGIC & COPY BUTTONS
+   ========================================================================== */
+const svgCopyIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+const svgCheckIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+
+// Notice the missing inline 'onclick' attributes here; replaced securely with 'data-target-id'.
+const guideData = {
+    chartjs: {
+        writing: `<h2>📊 Quick Guide: Writing Chart.js</h2>
+<p>Chart.js uses a single JavaScript Object to define the chart. Do not write variable declarations (like <code>const chart = ...</code>), just output the raw JSON-like object.</p>
+<p><strong>Basic Structure:</strong></p>
+<pre><code>{
+  type: 'bar', // Change to 'line', 'pie', 'doughnut', 'radar', or 'scatter'
+  data: {
+    labels: ['January', 'February', 'March'], // X-axis labels
+    datasets: [{
+      label: 'Monthly Revenue',
+      data: [1200, 1900, 3000],               // Y-axis data points
+      backgroundColor: ['#bc6c25', '#dda15e', '#606c38']
+    }]
+  },
+  options: {
+    maintainAspectRatio: false, // Recommended for the Exporter Studio
+    animation: false,           // Required for clean SVG/PNG exports
+    scales: {
+      yAxes: [{ ticks: { beginAtZero: true } }]
+    }
+  }
+}</code></pre>
+<p><em>💡 Tip: When using the Exporter Studio, checking the "Labels" box will automatically draw the exact data values on top of your bars and lines, ignoring normal Chart.js tooltip rules.</em></p>`,
+        prompting: `<h3>Prompting guide: 📊 For Chart.js</h3>
+<p>Use this prompt to ensure the AI uses the correct version and formatting, and takes advantage of our custom label features:</p>
+<p><strong>Copy & Paste this to your AI:</strong></p>
+<div class="prompt-container">
+    <button class="copy-prompt-btn" aria-label="Copy Prompt" data-target-id="chartjs-prompt-text">${svgCopyIcon}</button>
+    <blockquote id="chartjs-prompt-text">"I am using a custom Chart.js viewer that uses Chart.js version 2.9.4. I need you to generate a chart based on my data.<br>
+<strong>CRITICAL RULES:</strong><br>
+1. ONLY output the raw JavaScript configuration object starting with <code>{ type: ... }</code>.<br>
+2. DO NOT output any HTML, <code>&lt;script&gt;</code> tags, or markdown code blocks.<br>
+3. DO NOT assign the object to a variable (e.g., no <code>const config =</code>).<br>
+4. Set <code>options.animation: false</code> and <code>options.maintainAspectRatio: false</code>.<br>
+5. (Optional) If the chart needs custom text labels on the points, include a <code>customLabels: ['Text1', 'Text2']</code> array and a <code>customLabelColors: ['#hex', '#hex']</code> array inside the dataset object.<br><br>
+Here is the data I want you to chart: [INSERT YOUR DATA HERE]"</blockquote>
+</div>`
+    },
+    mermaid: {
+        writing: `<h2>🌊 Quick Guide: Writing Mermaid.js</h2>
+<p>Mermaid uses a simple, Markdown-inspired text syntax to generate diagrams. Do not wrap it in code blocks, just write the raw text.</p>
+<p><strong>1. Flowcharts:</strong></p>
+<pre><code>graph LR
+    A[Hard Drive] -->|Reads Data| B(CPU)
+    B --> C{Decision}
+    C -->|Store| D[(Database)]
+    C -->|Display| E[Monitor]</code></pre>
+<p><strong>2. Sequence Diagrams:</strong></p>
+<pre><code>sequenceDiagram
+    participant User
+    participant API
+    participant Database
+
+    User->>API: Request Data
+    API->>Database: Query User Table
+    Database-->>API: Return Row
+    API-->>User: JSON Response</code></pre>
+<p><strong>3. Gantt Charts:</strong></p>
+<pre><code>gantt
+    title Project Timeline
+    dateFormat  YYYY-MM-DD
+    section Phase 1
+    Design UI           :a1, 2026-06-01, 7d
+    Backend Setup       :after a1, 5d</code></pre>`,
+        prompting: `<h3>Prompting guide: 🌊 For Mermaid.js</h3>
+<p>Use this prompt to ensure the AI outputs clean text that the studio can parse instantly:</p>
+<p><strong>Copy & Paste this to your AI:</strong></p>
+<div class="prompt-container">
+    <button class="copy-prompt-btn" aria-label="Copy Prompt" data-target-id="mermaid-prompt-text">${svgCopyIcon}</button>
+    <blockquote id="mermaid-prompt-text">"I am using a custom Mermaid.js viewer. I need you to generate a diagram based on my workflow.<br>
+<strong>CRITICAL RULES:</strong><br>
+1. ONLY output the raw Mermaid text syntax.<br>
+2. DO NOT wrap the output in markdown code blocks (e.g., no <code>\`\`\`mermaid</code>).<br>
+3. DO NOT include any explanatory text before or after the code. Just output the raw graph commands.<br><br>
+Here is the workflow I want you to diagram: [INSERT YOUR WORKFLOW HERE]"</blockquote>
+</div>`
+    }
+};
+
+function copyPrompt(btnElement, textElementId) {
+    const textElement = document.getElementById(textElementId);
+    if (!textElement) return;
+    const textToCopy = textElement.innerText;
+    
+    const showSuccess = () => {
+        btnElement.innerHTML = svgCheckIcon;
+        const toast = document.getElementById('toastNotification');
+        toast.classList.add('show');
+        setTimeout(() => {
+            btnElement.innerHTML = svgCopyIcon;
+            toast.classList.remove('show');
+        }, 2000);
+    };
+
+    const fallbackCopyTextToClipboard = (text) => {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            console.error('Fallback: Oops, unable to copy', err);
+        }
+        document.body.removeChild(textArea);
+    };
+
+    if (!navigator.clipboard) {
+        fallbackCopyTextToClipboard(textToCopy);
+        showSuccess();
+    } else {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            showSuccess();
+        }).catch(err => {
+            console.warn('Modern copy failed, trying fallback: ', err);
+            fallbackCopyTextToClipboard(textToCopy);
+            showSuccess();
+        });
+    }
+}
+
+function openGuide() {
+    const engine = document.getElementById('engineSelect').value;
+    const contentArea = document.getElementById('guideContentArea');
+    
+    contentArea.innerHTML = `
+        <div id="writingGuide" class="guide-pane active">${guideData[engine].writing}</div>
+        <div id="promptingGuide" class="guide-pane">${guideData[engine].prompting}</div>
+    `;
+    
+    document.querySelectorAll('.guide-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.guide-tab[data-target="writingGuide"]').classList.add('active');
+
+    document.getElementById('guideOverlay').classList.add('active');
+}
+
+function closeGuide() {
+    document.getElementById('guideOverlay').classList.remove('active');
+}
+
+function switchGuideTab(e) {
+    if (!e.target.classList.contains('guide-tab')) return;
+    
+    document.querySelectorAll('.guide-tab').forEach(t => t.classList.remove('active'));
+    e.target.classList.add('active');
+    
+    const targetId = e.target.getAttribute('data-target');
+    document.querySelectorAll('.guide-pane').forEach(p => p.classList.remove('active'));
+    document.getElementById(targetId).classList.add('active');
 }
