@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:;">
+    <title>Code to Chart</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" defer></script>
+    <script src="https://unpkg.com/canvas2svg@1.0.16/canvas2svg.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@9.4.3/dist/mermaid.min.js" defer></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <header>
+        <div class="branding">
+            <img src="assets/c2c_logo.jpeg" alt="C" class="logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect fill=\'%23bc6c25\' width=\'100\' height=\'100\'/><text fill=\'white\' x=\'50\' y=\'65\' font-size=\'60\' text-anchor=\'middle\' font-family=\'serif\'>Q</text></svg>'">
+            <h1 class="app-title">Code to Chart</h1>
+        </div>
+        <div class="header-actions">
+            <button id="themeToggleBtn" class="theme-toggle" aria-label="Toggle Theme">
+                <svg class="icon-sun" viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/></svg>
+                <svg class="icon-moon" viewBox="0 0 24 24"><path d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"/></svg>
+            </button>
+            <button id="helpBtn" class="theme-toggle btn-help">Help</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <div class="panel left-panel">
+            <div class="toolbar" id="step1-target">
+                <select id="engineSelect">
+                    <option value="chartjs">Chart.js (JS Object)</option>
+                    <option value="mermaid">Mermaid.js (Markdown)</option>
+                </select>
+                <button id="renderBtn" class="btn-primary">Render ➔</button>
+            </div>
+            <textarea id="codeInput" spellcheck="false"></textarea>
+        </div>
+
+        <div class="panel right-panel">
+            <div class="toolbar" id="step4-target">
+                <div class="export-group">
+                    <div class="export-left">
+                        <label class="toolbar-toggle" style="border-right: 1px solid var(--border-color); padding-right: 15px;">
+                            <input type="checkbox" id="bgTransparent"> Transparent
+                        </label>
+                        <div id="labelOptions" class="label-options-container">
+                            <label class="toolbar-toggle">
+                                <input type="checkbox" id="showLabels"> Labels
+                            </label>
+                            <input type="color" id="labelColor" value="#bc6c25" title="Label Color">
+                        </div>
+                    </div>
+                    <div class="export-right" id="step5-target">
+                        <span class="download-label">Download:</span>
+                        <button id="exportPngBtn" class="btn-export">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            PNG
+                        </button>
+                        <button id="exportSvgBtn" class="btn-export">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            SVG
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="canvas-container" id="renderArea"></div>
+        </div>
+    </div>
+
+    <div class="tour-backdrop" id="tourBackdrop"></div>
+    <div class="tour-tooltip" id="tourTooltip">
+        <div class="tour-header">
+            <h3 class="tour-title" id="tourTitle">Welcome</h3>
+            <span id="tourStepBadge" class="tour-badge">1/5</span>
+        </div>
+        <div class="tour-content" id="tourContent">Text goes here</div>
+        <div class="tour-footer">
+            <button id="skipTourBtn" class="btn-tour-skip">Skip</button>
+            <button id="nextTourBtn" class="btn-primary">Next ➔</button>
+        </div>
+    </div>
+
+</body>
+</html>
