@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Code to Chart is a lightweight, zero-backend, browser-based tool for writing, previewing, and exporting high-resolution charts and diagrams using Chart.js and Mermaid.js.">
+    <meta name="keywords" content="chart generator, mermaid.js viewer, chart.js editor, zero-backend chart tool, export svg chart, export png chart, diagram maker, data visualization">
+    <meta name="author" content="Code to Chart">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:;">
-    <title>Code to Chart</title>
+    <title>Code to Chart - Generate & Export High-Res Diagrams</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +23,7 @@
 
     <header>
         <div class="branding">
-            <img src="assets/c2c_logo.jpeg" alt="C" class="logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect fill=\'%23bc6c25\' width=\'100\' height=\'100\'/><text fill=\'white\' x=\'50\' y=\'65\' font-size=\'60\' text-anchor=\'middle\' font-family=\'serif\'>Q</text></svg>'">
+            <img src="assets/c2c_logo.jpeg" alt="Code to Chart Logo" class="logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect fill=\'%23bc6c25\' width=\'100\' height=\'100\'/><text fill=\'white\' x=\'50\' y=\'65\' font-size=\'60\' text-anchor=\'middle\' font-family=\'serif\'>Q</text></svg>'">
             <h1 class="app-title">Code to Chart</h1>
         </div>
         <div class="header-actions">
@@ -33,16 +36,21 @@
     </header>
 
     <div class="main-container">
-        
         <div class="panel left-panel">
             <div class="toolbar" id="step1-target">
-                <select id="engineSelect">
+                <select id="engineSelect" aria-label="Select Engine">
                     <option value="chartjs">Chart.js (JS Object)</option>
                     <option value="mermaid">Mermaid.js (Markdown)</option>
                 </select>
                 <button id="renderBtn" class="btn-primary">Render ➔</button>
             </div>
-            <textarea id="codeInput" spellcheck="false"></textarea>
+            
+            <textarea id="codeInput" spellcheck="false" aria-label="Code Input"></textarea>
+            
+            <button id="guideBtn" class="btn-guide">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                Guide
+            </button>
         </div>
 
         <div class="panel right-panel">
@@ -88,6 +96,19 @@
             <button id="nextTourBtn" class="btn-primary">Next ➔</button>
         </div>
     </div>
+
+    <div class="guide-overlay" id="guideOverlay">
+        <div class="guide-modal">
+            <button class="guide-close" id="guideCloseBtn">&times;</button>
+            <div class="guide-tabs">
+                <button class="guide-tab active" data-target="writingGuide">Writing Guide</button>
+                <button class="guide-tab" data-target="promptingGuide">Prompting Guide</button>
+            </div>
+            <div class="guide-content-area" id="guideContentArea"></div>
+        </div>
+    </div>
+
+    <div id="toastNotification" class="toast-notification">Copied to clipboard!</div>
 
 </body>
 </html>
