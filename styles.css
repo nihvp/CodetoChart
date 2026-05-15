@@ -1,0 +1,159 @@
+/* --- CSS VARIABLES & THEMING --- */
+/* Variables make it easy to switch colors globally for Dark/Light mode */
+:root {
+    --bg-body: #fefae0; 
+    --bg-header: #dda15e; 
+    --text-header: #283618;
+    --brand-color: #bc6c25; 
+    --bg-panel-left: #fefae0; 
+    --bg-panel-right: #e9edc9;
+    --border-color: #dda15e; 
+    --text-main: #283618; 
+    --bg-code: #ffffff;
+    --text-code: #283618; 
+    --bg-canvas: #ffffff; 
+    --btn-primary: #bc6c25; 
+    --btn-export: #606c38;
+}
+
+[data-theme="dark"] {
+    --bg-body: #283618; 
+    --bg-header: #1e2912; 
+    --text-header: #fefae0;
+    --brand-color: #dda15e; 
+    --bg-panel-left: #283618; 
+    --bg-panel-right: #606c38;
+    --border-color: #606c38; 
+    --text-main: #fefae0; 
+    --bg-code: #1e2912;
+    --text-code: #dda15e; 
+    --bg-canvas: #fefae0; 
+    --btn-primary: #dda15e; 
+    --btn-export: #283618;
+}
+
+/* --- GLOBAL STYLES --- */
+* { 
+    box-sizing: border-box; 
+    font-family: 'Instrument Serif', serif; 
+    letter-spacing: 0.02em; 
+}
+
+body { 
+    margin: 0; padding: 0; display: flex; flex-direction: column; 
+    height: 100vh; background: var(--bg-body); color: var(--text-main); 
+    transition: background 0.4s, color 0.4s; overflow: hidden; font-size: 1.2rem; 
+}
+
+/* --- HEADER --- */
+header { 
+    background: var(--bg-header); color: var(--text-header); padding: 15px 25px; 
+    display: flex; justify-content: space-between; align-items: center; 
+    border-bottom: 2px solid var(--brand-color); flex-shrink: 0; transition: background 0.4s; 
+}
+
+.branding { display: flex; align-items: center; gap: 12px; }
+.logo { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; background: white; }
+.app-title { margin: 0; font-size: 1.8rem; font-style: italic; }
+.header-actions { display: flex; align-items: center; gap: 15px; }
+
+/* Animated Theme Icon */
+.theme-toggle { 
+    background: transparent; border: none; color: var(--text-header); 
+    cursor: pointer; position: relative; width: 40px; height: 40px; 
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+    overflow: hidden; transition: background 0.3s; 
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.1); }
+.theme-toggle svg { width: 24px; height: 24px; fill: currentColor; position: absolute; transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.5s; }
+
+.icon-sun { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+.icon-moon { opacity: 1; transform: rotate(0deg) scale(1); }
+[data-theme="light"] .icon-sun { opacity: 1; transform: rotate(0deg) scale(1); }
+[data-theme="light"] .icon-moon { opacity: 0; transform: rotate(90deg) scale(0.5); }
+
+.btn-help { font-size: 1.2rem; font-style: italic; width: auto; border-radius: 4px; padding: 0 10px; }
+
+/* --- MAIN LAYOUT --- */
+.main-container { display: flex; flex: 1; overflow: hidden; flex-direction: row; }
+.panel { flex: 1; padding: 20px; display: flex; flex-direction: column; overflow-y: auto; }
+.left-panel { background: var(--bg-panel-left); border-right: 1px solid var(--border-color); }
+.right-panel { background: var(--bg-panel-right); align-items: center; justify-content: flex-start; }
+
+/* --- CONTROLS & INPUTS --- */
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; width: 100%; justify-content: space-between; align-items: center;}
+select { flex: 1; min-width: 150px; padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-code); color: var(--text-main); font-size: 1.2rem; cursor: pointer; transition: 0.3s; }
+
+/* Textarea uses monospace to keep code alignment clean */
+textarea { 
+    flex-grow: 1; width: 100%; background: var(--bg-code); color: var(--text-code); 
+    border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; 
+    font-family: monospace; font-size: 15px; resize: none; outline: none; 
+    margin-bottom: 10px; transition: 0.3s; 
+}
+
+/* Standard Buttons */
+button { padding: 8px 18px; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; white-space: nowrap; font-size: 1.2rem; }
+.btn-primary { background: var(--btn-primary); color: var(--bg-body); font-weight: bold; }
+.btn-primary:hover { filter: brightness(1.1); }
+
+/* Export Buttons */
+.btn-export { display: flex; align-items: center; justify-content: center; gap: 6px; background: var(--btn-export); color: #fefae0; border: 1px solid var(--border-color); min-width: 80px; }
+.btn-export:hover { filter: brightness(1.2); }
+.btn-export svg { width: 16px; height: 16px; }
+
+/* Export Toolbar Details */
+.export-group { display: flex; align-items: center; justify-content: space-between; width: 100%; background: rgba(0,0,0,0.1); padding: 8px 15px; border-radius: 8px; border: 1px solid var(--border-color); flex-wrap: wrap; gap: 10px; }
+.export-left { display: flex; align-items: center; gap: 15px; }
+.export-right { display: flex; align-items: center; gap: 10px; }
+.toolbar-toggle { display: flex; align-items: center; gap: 5px; font-size: 1.1rem; cursor: pointer; }
+.download-label { font-weight: bold; color: var(--brand-color); font-style: italic; }
+
+.label-options-container { display: flex; align-items: center; gap: 5px; transition: all 0.3s; }
+#labelColor { border: none; width: 24px; height: 24px; cursor: pointer; background: transparent; padding: 0; }
+
+/* --- CANVAS RENDERING AREA --- */
+.canvas-container { 
+    background: var(--bg-canvas); padding: 10px; border-radius: 8px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 100%; max-width: 800px; 
+    height: 100%; min-height: 350px; max-height: 550px; display: flex; 
+    align-items: center; justify-content: center; overflow: hidden; 
+    border: 1px solid var(--border-color); transition: background 0.3s; 
+}
+
+/* Creates a subtle checkered grid to indicate transparency */
+.canvas-container.transparent { 
+    background: transparent; 
+    background-image: radial-gradient(var(--border-color) 1px, transparent 0); 
+    background-size: 20px 20px; 
+}
+#renderArea svg { max-height: 100%; max-width: 100%; }
+
+/* --- GUIDED SPOTLIGHT TOUR --- */
+.tour-spotlight-active { 
+    position: relative; z-index: 1001 !important; 
+    box-shadow: 0 0 0 4px var(--brand-color), 0 0 20px rgba(0,0,0,0.5) !important; 
+    border-radius: 6px; background: var(--bg-code); 
+}
+.tour-backdrop { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+.tour-backdrop.active { opacity: 1; pointer-events: all; }
+
+.tour-tooltip { position: fixed; z-index: 1002; background: var(--bg-header); color: var(--text-header); padding: 20px; border-radius: 8px; width: 320px; border: 1px solid var(--brand-color); box-shadow: 0 10px 25px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transition: opacity 0.3s ease, top 0.4s ease, left 0.4s ease; }
+.tour-tooltip.active { opacity: 1; pointer-events: all; }
+.tour-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.tour-title { margin: 0; color: var(--brand-color); font-size: 1.6rem; font-style: italic; }
+.tour-badge { font-size: 1rem; color: var(--brand-color); }
+.tour-content { margin-bottom: 20px; font-size: 1.1rem; line-height: 1.3; }
+.tour-footer { display: flex; justify-content: space-between; gap: 10px; }
+.btn-tour-skip { background: transparent; color: #94a3b8; border: 1px solid #94a3b8; font-size: 1.1rem; padding: 4px 12px; }
+.btn-tour-skip:hover { background: rgba(255,255,255,0.1); color: var(--text-header); }
+
+/* --- RESPONSIVE MOBILE FIXES --- */
+@media (max-width: 768px) {
+    .main-container { flex-direction: column; overflow-y: auto; }
+    .panel { overflow-y: visible; flex: none; height: auto; }
+    .left-panel { border-right: none; border-bottom: 2px solid var(--border-color); min-height: 50vh; }
+    .right-panel { min-height: 50vh; padding-bottom: 30px; }
+    .canvas-container { height: 350px; }
+    .export-group { justify-content: center; }
+}
