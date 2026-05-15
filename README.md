@@ -11,7 +11,7 @@ Code to Chart is a lightweight, zero-backend, browser-based tool for writing, pr
 
 ## 🚀 Getting Started
 
-1. Visit 
+1. Visit [Code to Chart](https://muhammed.me/CodetoChart/)
 3. Select your engine, write your code, and click **Render**.
 
 ---
