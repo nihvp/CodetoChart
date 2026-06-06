@@ -1,7 +1,7 @@
 # Code to Chart
 Code to Chart is a lightweight, zero-backend, browser-based tool for writing, previewing, and exporting high-resolution charts and diagrams. It supports rendering complex data visualizations and exporting them as scalable SVGs or transparent PNGs.
 
-## ✨ Features
+## Features
 
 * **Multi-Engine Support:** Write raw configuration objects for **Chart.js**, or use markdown syntax for **Mermaid.js**.
 * **Vector & Raster Export:** Download your charts as crisp `.png` files or infinitely scalable `.svg` files.
@@ -9,13 +9,13 @@ Code to Chart is a lightweight, zero-backend, browser-based tool for writing, pr
 * **Privacy-First & Local:** Everything renders client-side. No servers, no data logging, no dependencies to install.
 * **Smart UI:** Features a guided onboarding tour, a persistent Dark/Light mode toggle, and mobile-responsive layout.
 
-## 🚀 Getting Started
+## Getting Started
 
 1. Visit [Code to Chart](https://muhammed.me/CodetoChart/)
 3. Select your engine, write your code, and click **Render**.
 
 
-## 📊 Quick Guide: Writing Chart.js
+## Quick Guide: Writing Chart.js
 
 Chart.js uses a single JavaScript Object to define the chart. Do not write variable declarations (like `const chart = ...`), just output the raw JSON-like object.
 
@@ -46,7 +46,7 @@ Chart.js uses a single JavaScript Object to define the chart. Do not write varia
 *💡 Tip: When using the Exporter Studio, checking the "Labels" box will automatically draw the exact data values on top of your bars and lines, ignoring normal Chart.js tooltip rules.*
 
 
-## 🌊 Quick Guide: Writing Mermaid.js
+## Quick Guide: Writing Mermaid.js
 
 Mermaid uses a simple, Markdown-inspired text syntax to generate diagrams. Do not wrap it in code blocks, just write the raw text.
 
@@ -92,13 +92,13 @@ gantt
 
 
 
-## 🤖 AI Prompting Guide
+## AI Prompting Guide
 
 If you want to use an AI (like ChatGPT, Gemini, or Claude) to generate the code for this tool, you need to give it specific instructions. Because this studio uses a custom sandbox, the AI must output *raw code* without standard web boilerplate.
 
 Copy and paste these "Magic Prompts" into your AI before asking it to build your chart.
 
-### 📊 For Chart.js
+### For Chart.js
 
 Use this prompt to ensure the AI uses the correct version and formatting, and takes advantage of our custom label features:
 
@@ -114,7 +114,7 @@ Use this prompt to ensure the AI uses the correct version and formatting, and ta
 > 
 > Here is the data I want you to chart: [INSERT YOUR DATA HERE]"
 
-### 🌊 For Mermaid.js
+### For Mermaid.js
 
 Use this prompt to ensure the AI outputs clean text that the studio can parse instantly:
 
